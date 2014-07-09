@@ -52,20 +52,23 @@ function async.map( obj, fn, onComplete )
 		end);
 	end
 end
-function async.waterfall( todo, ... )
-	local function call( i, ... )
-		if not todo[i] then return end
-		todo[i]( function( err, ... )
-			if err then
-				error( err );
-			else
-				call( i + 1, ... );
-			end
-		end, ... )
-	end
-	call( 1, ... );
-end
 
+function async.series( todo, onFinish )
+	local function call( ind )
+		if( todo[ind] ) then
+			todo[ind]( function(err)
+				if( err ) then
+					onFinish( err );
+				else
+					call( ind + 1 );
+				end
+			end);
+		else
+			onFinish( );
+		end
+	end
+	call( 1 );
+end
 
 /*
 function async.auto( todo, onDone )

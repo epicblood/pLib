@@ -1,4 +1,6 @@
 xfn = {};
+local xfn = xfn;
+local pairs , ipairs , unpack = pairs , ipairs , unpack ;
 
 function xfn.filter( tbl, func )
 	local ir, iw = 1, 1;
@@ -90,6 +92,7 @@ function xfn.fn_AND( ... )
 		return true
 	end	
 end
+// logic
 function xfn.fn_IF( c, a, b )
 	return function(...)
 		(c(...) and a or b)(...)
@@ -99,12 +102,7 @@ end
 function xfn.nothing() end
 xfn.noop = xfn.nothing;
 
-function xfn.fn_call(...)
-	return function(...)
-		return xfn.call(...);
-	end
-end
-
+// math
 function xfn.fn_const(a)
 	return function() return a end
 end
@@ -130,28 +128,30 @@ function xfn.fn_sub(a,b)
 	end
 end
 
+// function manipulation
 function xfn.fn_partial(fn, ... )
-	local a = {...}
+	local args = {...};
 	return function(...)
-		fn(unpack(a),...);
-	end
-end
-
-function xfn.fn_skipArgs( args, func )
-	local shifter = function( args, a,... )
-		if( args == 0 )then
-			return func(...)
-		else
-			shifter( args-1,... )
+		local inject = {...};
+		local toInject = #inject
+		local params = {};
+		for k,v in pairs(args)do
+			params[k] = v;
 		end
-	end
-	return function(...)
-		return shifter( args-1, ... )
+		local a, b = 1, 1;
+		while( b <= toInject )do
+			if not params[a] then
+				params[a] = inject[b];
+				b = b + 1;
+			end
+			a = a + 1;
+		end
+		fn(unpack(params));
 	end
 end
 
 // call them in parallel and throw away results
-function xfn.fn_series(funcs)
+function xfn.fn_compose(funcs)
 	return function(...)
 		local res = {};
 		for k,v in ipairs(funcs)do
@@ -159,4 +159,16 @@ function xfn.fn_series(funcs)
 		end
 		return res;
 	end
+end
+
+function xfn.fn_forEach( func )
+	return function( tbl )
+		for k,v in pairs(tbl)do
+			func( v, k );
+		end
+	end
+end
+
+function xfn.fn_deafen( func )
+	return function() func() end
 end
