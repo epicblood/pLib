@@ -140,7 +140,7 @@ function xfn.fn_partial(fn, ... )
 		end
 		local a, b = 1, 1;
 		while( b <= toInject )do
-			if not params[a] then
+			if params[a] == nil then
 				params[a] = inject[b];
 				b = b + 1;
 			end

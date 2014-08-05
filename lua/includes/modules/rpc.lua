@@ -15,7 +15,6 @@ local callbacks = {};
 local id = 0;
 net.Receive( 'rpc_response', function()
 	local id = net.ReadUInt(32);
-	print('rpc response to message: '..id);
 	if callbacks[id] then
 		callbacks[id](net.ReadTable());
 		callbacks[id] = nil;
@@ -50,7 +49,7 @@ if SERVER then
 			net.WriteString(name);
 			net.WriteUInt(id, 32);
 			net.WriteTable(data);
-		net.SendToServer();
+		net.Send();
 	end
 	
 elseif CLIENT then

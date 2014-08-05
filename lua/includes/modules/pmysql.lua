@@ -69,9 +69,17 @@ function db_mt:query_ex( sqlstr, options, cback )
 	for k,v in pairs( options )do
 		options[k] = self:escape( tostring( v  ) );
 	end
-	sqlstr = string.gsub( sqlstr, '?', '%%s' );
+	sqlstr = sqlstr:gsub('%%','%%%%'):gsub('?', '%%s');
 	sqlstr = string.format( sqlstr, unpack( options ) );
 	return self:query( sqlstr, cback );
+end
+
+function db_mt:query_sync( sqlstr, options )
+	local _data, _err;
+	self:query_ex( sqlstr, options, function(data,err)
+		_data, _err = data, err;
+	end):wait();
+	return _data, _err;
 end
 
 function db_mt:escape( str )
