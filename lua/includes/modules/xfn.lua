@@ -65,6 +65,7 @@ function xfn.map( tbl, func )
 	for k,v in pairs( tbl )do
 		tbl[k] = func( v, k );
 	end
+	return tbl;
 end
 
 // FUNCTIONAL

@@ -1,5 +1,5 @@
 if SERVER then
-	
+
 	util.AddNetworkString('pnet.ready');
 	
 	local ready = {};
@@ -14,9 +14,18 @@ if SERVER then
 			if not ready[pl] then
 				ready[pl] = {};
 			end
-			ready[pl][#ready[pl]+1] = func;
+			table.insert(ready[pl], func);
 		end
 	end
+	
+	net.Receive('pnet.ready', function(_, pl)
+		if ready[pl] == true or ready[pl] == nil 	then return end
+		print('PLAYER IS READY!');
+		for _, func in ipairs(ready[pl])do
+			func();
+		end
+		ready[pl] = true;
+	end);
 	
 else
 	

@@ -5,5 +5,5 @@ if SERVER then
 	AddCSLuaFile 'includes/modules/async.lua'
 	AddCSLuaFile 'includes/modules/rpc.lua'
 	AddCSLuaFile 'includes/modules/pnet.lua'
-	AddCSLuaFile 'includes/modules/dprint'
+	AddCSLuaFile 'includes/modules/dprint.lua'
 end
