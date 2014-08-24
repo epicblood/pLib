@@ -1,33 +1,6 @@
-local col_grey = Color(100,100,100);
-local HSVToColor = HSVToColor ;
-local incr = SERVER and 72 or 0;
-local fileColors = {};
-local fileAbbrev = {};
-function dprint(...)
-	local info = debug.getinfo(2)
-	local fname = info.short_src;
-	if fileAbbrev[fname] then
-		fname = fileAbbrev[fname];
-	else
-		local oldfname = fname;
-		fname = string.Explode('/', fname);
-		fname = fname[#fname];
-		fileAbbrev[oldfname] = fname;
-	end
-	
-	if not fileColors[fname] then
-		incr = incr + 1;
-		fileColors[fname] = HSVToColor(incr * 100 % 255, 1, 1)
-	end
-	
-	MsgC(fileColors[fname], fname..':'..info.linedefined);
-	print( '  ', ... )
-end
+--[[LICENSE:
+_p_modules\lua\includes\modules\dprint.luasrc
 
-function fdebug(name)
-	local col = Color(math.random(1,255), math.random(1,255), math.random(1, 255));
-	return function(...)
-		MsgC(col, name .. ' - ');
-		dprint(...);
-	end
-end
+Copyright 08/24/2014 thelastpenguin
+]]
+local a=Color(0x64,0x64,0x64) local b=HSVToColor local c=((SERVER and 0x48) or 0x0) local d={} local e={} function dprint(...) local f=debug.getinfo(0x2) local g=f.short_src if e[g] then g=e[g] else local h=g g=string.Explode('/',g) g=g[# g] e[h]=g end if not d[g] then c=c+0x1 d[g]=b(c*0x64%0xFF,0x1,0x1) end MsgC(d[g],g..':'..f.linedefined) print('  ',...) end local f function dbench_start() f=os.clock() end function dbench_print() print('[benchmark] '..os.clock()-f) end function fdebug(g) local h=Color(math.random(0x1,0xFF),math.random(0x1,0xFF),math.random(0x1,0xFF)) return function(...) MsgC(h,g..' - ') dprint(...) end end 
