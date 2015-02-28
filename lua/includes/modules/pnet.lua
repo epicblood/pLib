@@ -1,40 +1,6 @@
-if SERVER then
+--[[LICENSE:
+_p_modules\lua\includes\modules\pnet.luasrc
 
-	util.AddNetworkString('pnet.ready');
-	
-	local ready = {};
-	hook.Add('PlayerDisconnected','pnet', function(pl)
-		ready[pl] = nil;
-	end);
-	
-	function net.waitForPlayer(pl, func)
-		if ready[pl] == true then
-			func()
-		else
-			if not ready[pl] then
-				ready[pl] = {};
-			end
-			table.insert(ready[pl], func);
-		end
-	end
-	
-	net.Receive('pnet.ready', function(_, pl)
-		if ready[pl] == true or ready[pl] == nil 	then return end
-		print('PLAYER IS READY!');
-		for _, func in ipairs(ready[pl])do
-			func();
-		end
-		ready[pl] = true;
-	end);
-	
-else
-	
-	hook.Add('Think','pnet.waitForPlayer', function()
-		if IsValid(LocalPlayer()) then
-			hook.Remove('Think', 'pnet.waitForPlayer');
-			net.Start('pnet.ready');
-			net.SendToServer();
-		end
-	end);
-	
-end
+Copyright 08/24/2014 thelastpenguin
+]]
+if SERVER then util.AddNetworkString('pnet.ready') local a={} hook.Add('PlayerDisconnected','pnet',function(b) a[b]=nil end) function net.waitForPlayer(b,c) if a[b]==true then c() else if not a[b] then a[b]={} end table.insert(a[b],c) end end net.Receive('pnet.ready',function(b,c) if (a[c]==true or a[c]==nil) then return  end print('PLAYER IS READYnot') for d,e in ipairs(a[c]) do e()  end  a[c]=true end) else hook.Add('Think','pnet.waitForPlayer',function() if IsValid(LocalPlayer()) then hook.Remove('Think','pnet.waitForPlayer') net.Start('pnet.ready') net.SendToServer() end end) end 
